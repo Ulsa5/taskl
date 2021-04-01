@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class LoginPage extends StatelessWidget {
   Widget createUserInput() {
@@ -38,26 +41,50 @@ class LoginPage extends StatelessWidget {
         ));
   }
 
-  Widget createLoginButton() {
+  Widget createLoginButton(context, nombre, direccion) {
+    String _nombre = nombre;
+    String _direccion = direccion;
     return Container(
-      padding: const EdgeInsets.all(50),
+      padding: const EdgeInsets.only(top: 10, left: 70, right: 70),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
             primary: Colors.green, onPrimary: Colors.white),
-        child: Text('Ingresar'),
-        onPressed: () {},
+        child: Text(_nombre),
+        onPressed: () {
+          Navigator.pushNamed(context, _direccion);
+        },
       ),
     );
   }
 
-  Widget createAccountLink() {
+  Widget createExitButton(context, nombre) {
+    String _nombre = nombre;
     return Container(
+        padding: const EdgeInsets.only(top: 10, left: 70, right: 70),
+        child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                primary: Colors.red, onPrimary: Colors.white),
+            child: Text(_nombre),
+            onPressed: () => exit(0)
+            //tooltip:'Salir',
+            //child: new Icon(Icons.close)
+            ));
+  }
+
+  Widget createAccountLink(context) {
+    return InkWell(
+      child: Container(
         padding: const EdgeInsets.only(top: 32),
         child: Text(
           '¿No tienes una cuenta? Registrate!',
           textAlign: TextAlign.right,
           style: TextStyle(fontWeight: FontWeight.bold),
-        ));
+        ),
+      ),
+      onTap: () {
+        Navigator.pushNamed(context, '/register');
+      },
+    );
   }
 
   @override
@@ -71,12 +98,15 @@ class LoginPage extends StatelessWidget {
             Image.asset(
               'images/logo.png',
               //width: 300,
-              height: 250,
+              height: 50,
             ),
+            Padding(padding: EdgeInsets.only(top: 100)),
             createUserInput(),
             createPasswordInput(),
-            createLoginButton(),
-            createAccountLink()
+            Padding(padding: EdgeInsets.only(top: 50)),
+            createLoginButton(context, "Ingresar", '/splash'),
+            createExitButton(context, "Salir"),
+            createAccountLink(context),
           ]),
         ),
       ),

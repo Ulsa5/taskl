@@ -47,9 +47,9 @@ MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] C:\Users\Ul
 	android:appComponentFactory
 		ADDED from [androidx.core:core:1.1.0] C:\Users\Ulsa\.gradle\caches\transforms-2\files-2.1\2e94107f30f39be366a17347c2bf100b\core-1.1.0\AndroidManifest.xml:24:18-86
 	android:label
-		ADDED from C:\Users\Ulsa\Desktop\Taskl\taskl.Frontend\taskl_frontend\android\app\src\main\AndroidManifest.xml:4:9-39
+		ADDED from C:\Users\Ulsa\Desktop\Taskl\taskl.Frontend\taskl_frontend\android\app\src\main\AndroidManifest.xml:4:9-30
 	android:icon
-		ADDED from C:\Users\Ulsa\Desktop\Taskl\taskl.Frontend\taskl_frontend\android\app\src\main\AndroidManifest.xml:5:9-43
+		ADDED from C:\Users\Ulsa\Desktop\Taskl\taskl.Frontend\taskl_frontend\android\app\src\main\AndroidManifest.xml:5:9-45
 activity#com.example.taskl_frontend.MainActivity
 ADDED from C:\Users\Ulsa\Desktop\Taskl\taskl.Frontend\taskl_frontend\android\app\src\main\AndroidManifest.xml:6:9-34:20
 	android:launchMode
