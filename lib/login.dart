@@ -1,14 +1,21 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class LoginPage extends StatelessWidget {
+  final usuario = TextEditingController();
+  final contrasenia = TextEditingController();
+
+  String user = '';
+  String pass = '';
+
   Widget createUserInput() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 3),
       child: TextField(
         autofocus: true,
+        controller: usuario,
         decoration: InputDecoration(
             enabledBorder: const OutlineInputBorder(
               borderSide: const BorderSide(color: Colors.green, width: 1),
@@ -27,6 +34,7 @@ class LoginPage extends StatelessWidget {
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 3),
         child: TextField(
+          controller: contrasenia,
           decoration: InputDecoration(
               enabledBorder: const OutlineInputBorder(
                 borderSide: const BorderSide(color: Colors.green, width: 1),
@@ -51,7 +59,25 @@ class LoginPage extends StatelessWidget {
             primary: Colors.green, onPrimary: Colors.white),
         child: Text(_nombre),
         onPressed: () {
-          Navigator.pushNamed(context, _direccion);
+          user = usuario.text;
+          pass = contrasenia.text;
+
+          if (user == 'saul' && pass == 'saul') {
+            Fluttertoast.showToast(
+                msg: "Bienvenido $user",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                backgroundColor: Colors.green,
+                fontSize: 16);
+            Navigator.pushNamed(context, _direccion);
+          } else {
+            Fluttertoast.showToast(
+                msg: "Usuario / contraseña incorrectos!",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                backgroundColor: Colors.green,
+                fontSize: 16);
+          }
         },
       ),
     );
@@ -104,7 +130,7 @@ class LoginPage extends StatelessWidget {
             createUserInput(),
             createPasswordInput(),
             Padding(padding: EdgeInsets.only(top: 50)),
-            createLoginButton(context, "Ingresar", '/splash'),
+            createLoginButton(context, "Ingresar", '/main'),
             createExitButton(context, "Salir"),
             createAccountLink(context),
           ]),

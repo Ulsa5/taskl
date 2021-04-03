@@ -56,6 +56,23 @@ class RegisterPage extends StatelessWidget {
     );
   }
 
+  Widget createBackButton(context, nombre, direccion) {
+    String _nombre = nombre;
+    String _direccion = direccion;
+    return Container(
+        padding: const EdgeInsets.only(top: 10, left: 70, right: 70),
+        child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                primary: Colors.red, onPrimary: Colors.white),
+            child: Text(_nombre),
+            onPressed: () {
+              Navigator.pushNamed(context, _direccion);
+            }
+            //tooltip:'Salir',
+            //child: new Icon(Icons.close)
+            ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -76,7 +93,7 @@ class RegisterPage extends StatelessWidget {
             createPasswordInput("Contraseña"),
             createPasswordInput("Repite la contraseña"),
             createLoginButton(context, "Registrarse", '/login'),
-            createLoginButton(context, "Cancelar", '/login'),
+            createBackButton(context, "Cancelar", '/login'),
           ]),
         ),
       ),
