@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:taskl/login.dart';
+//import 'package:http/http.dart' as http;
 
 class Main extends StatefulWidget {
   @override
@@ -6,6 +9,23 @@ class Main extends StatefulWidget {
 }
 
 class _MainState extends State<Main> {
+  SharedPreferences sharedPreferences;
+
+  @override
+  void initState() {
+    super.initState();
+    checkLoginStatus();
+  }
+
+  checkLoginStatus() async {
+    sharedPreferences = await SharedPreferences.getInstance();
+    if (sharedPreferences.getString("token") == null) {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
+          (Route<dynamic> route) => false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -16,10 +36,17 @@ class _MainState extends State<Main> {
             leading: IconButton(
               icon: Icon(Icons.arrow_back),
               onPressed: () {
-                Navigator.pushNamed(context, '/login');
+                sharedPreferences.clear();
+                // ignore: deprecated_member_use
+                sharedPreferences.commit();
+                Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => LoginPage()),
+                    (Route<dynamic> route) => false);
+                //Navigator.pushNamed(context, '/login');
               },
             ),
-            title: Text('Taskl'),
+            title: Text('Tareas'),
             backgroundColor: Colors.green,
             bottom: TabBar(
               tabs: [
@@ -37,9 +64,21 @@ class _MainState extends State<Main> {
           ),
           //Ejemplo
           body: TabBarView(children: [
-            Icon(Icons.directions_car),
-            Icon(Icons.directions_transit),
-            Icon(Icons.directions_bike),
+            Container(
+              child: Center(
+                child: Text('Tareas Pendientes'),
+              ),
+            ),
+            Container(
+              child: Center(
+                child: Text('Tareas en Progreso'),
+              ),
+            ),
+            Container(
+              child: Center(
+                child: Text('Tareas Finalizadas'),
+              ),
+            ),
           ]),
         ),
       ),

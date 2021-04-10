@@ -17,6 +17,8 @@ dependencies:
   url_launcher: ^6.0.3
   transparent_image: ^2.0.0
   fluttertoast: ^8.0.3
+  http: any
+  shared_preferences: any
   
 
 dev_dependencies:

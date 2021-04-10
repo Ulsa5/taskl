@@ -1,14 +1,60 @@
+import 'dart:convert';
+//import 'dart:html';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'main.dart';
 
-class LoginPage extends StatelessWidget {
-  final usuario = TextEditingController();
-  final contrasenia = TextEditingController();
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
 
-  String user = '';
-  String pass = '';
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController usuario = new TextEditingController();
+  final TextEditingController password = new TextEditingController();
+
+  // ignore: unused_field
+  bool _isLoading = false;
+
+  signIn(String user, pass) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    Map data = {
+      'usuario': user,
+      'password': pass,
+    };
+    // ignore: avoid_init_to_null
+    var jsonResponse = null;
+
+    var response = await http.post(
+      Uri.parse("https://192.168.0.11:8000/api/login"),
+      body: data,
+    );
+
+    if (response.statusCode == 200) {
+      jsonResponse = json.decode(response.body);
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+      if (jsonResponse != null) {
+        setState(() {
+          _isLoading = false;
+        });
+        sharedPreferences.setString("token", jsonResponse['token']);
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (BuildContext context) => Main()),
+            (Route<dynamic> route) => false);
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
+        print(response.body);
+      }
+    }
+  }
 
   Widget createUserInput() {
     return Padding(
@@ -34,7 +80,7 @@ class LoginPage extends StatelessWidget {
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 3),
         child: TextField(
-          controller: contrasenia,
+          controller: password,
           decoration: InputDecoration(
               enabledBorder: const OutlineInputBorder(
                 borderSide: const BorderSide(color: Colors.green, width: 1),
@@ -49,27 +95,51 @@ class LoginPage extends StatelessWidget {
         ));
   }
 
-  Widget createLoginButton(context, nombre, direccion) {
-    String _nombre = nombre;
-    String _direccion = direccion;
+  Container createLoginButton() {
+    //context, nombre, direccion) {
+    // ignore: unused_local_variable
+    //String _nombre = nombre;
+    //String _direccion = direccion;
     return Container(
       padding: const EdgeInsets.only(top: 10, left: 70, right: 70),
+
+      /*child: RaisedButton(
+          onPressed: usuario.text == "" || password.text == ""
+              ? null
+              : () {
+                  setState(() {
+                    _isLoading = true;
+                  });
+                  signIn(usuario.text, password.text);
+                },
+          elevation: 0.0,
+          color: Colors.green,
+          child: Text(
+            'Ingresar',
+            style: TextStyle(color: Colors.white),
+          ),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+        )
+        */
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
             primary: Colors.green, onPrimary: Colors.white),
-        child: Text(_nombre),
+        child: Text(
+          "Ingresar",
+          style: TextStyle(color: Colors.white),
+        ),
         onPressed: () {
-          user = usuario.text;
-          pass = contrasenia.text;
-
-          if (user == 'saul' && pass == 'saul') {
+          setState(() {
+            _isLoading = true;
+          });
+          if (signIn(usuario.text, password.text) == true) {
             Fluttertoast.showToast(
-                msg: "Bienvenido $user",
+                msg: "Bienvenido " + usuario.text,
                 toastLength: Toast.LENGTH_SHORT,
                 gravity: ToastGravity.BOTTOM,
                 backgroundColor: Colors.green,
                 fontSize: 16);
-            Navigator.pushNamed(context, _direccion);
           } else {
             Fluttertoast.showToast(
                 msg: "Usuario / contraseña incorrectos!",
@@ -83,14 +153,14 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  Widget createExitButton(context, nombre) {
-    String _nombre = nombre;
+  Widget createExitButton(context, String nombre) {
+    //String _nombre = nombre;
     return Container(
         padding: const EdgeInsets.only(top: 10, left: 70, right: 70),
         child: ElevatedButton(
             style: ElevatedButton.styleFrom(
                 primary: Colors.red, onPrimary: Colors.white),
-            child: Text(_nombre),
+            child: Text(nombre),
             onPressed: () => exit(0)
             //tooltip:'Salir',
             //child: new Icon(Icons.close)
@@ -115,6 +185,8 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
+        .copyWith(statusBarColor: Colors.transparent));
     return MaterialApp(
       home: Scaffold(
         body: Container(
@@ -130,7 +202,7 @@ class LoginPage extends StatelessWidget {
             createUserInput(),
             createPasswordInput(),
             Padding(padding: EdgeInsets.only(top: 50)),
-            createLoginButton(context, "Ingresar", '/main'),
+            createLoginButton(), //context, "Ingresar", '/main'),
             createExitButton(context, "Salir"),
             createAccountLink(context),
           ]),
