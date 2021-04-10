@@ -27,11 +27,14 @@ class _LoginPageState extends State<LoginPage> {
       'usuario': user,
       'password': pass,
     };
+
     // ignore: avoid_init_to_null
     var jsonResponse = null;
 
     var response = await http.post(
-      Uri.parse("https://192.168.0.11:8000/api/login"),
+      Uri.parse("https://obscure-plains-83532.herokuapp.com/api/login"),
+      //local
+      //Uri.parse("http://192.168.0.11:8000/api/login"),
       body: data,
     );
 
@@ -47,12 +50,19 @@ class _LoginPageState extends State<LoginPage> {
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (BuildContext context) => Main()),
             (Route<dynamic> route) => false);
-      } else {
-        setState(() {
-          _isLoading = false;
-        });
-        print(response.body);
       }
+      //mensaje de bienvenida
+      Fluttertoast.showToast(
+          msg: "Bienvenido " + usuario.text,
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.green,
+          fontSize: 16);
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+      print(response.body);
     }
   }
 
@@ -96,32 +106,8 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Container createLoginButton() {
-    //context, nombre, direccion) {
-    // ignore: unused_local_variable
-    //String _nombre = nombre;
-    //String _direccion = direccion;
     return Container(
       padding: const EdgeInsets.only(top: 10, left: 70, right: 70),
-
-      /*child: RaisedButton(
-          onPressed: usuario.text == "" || password.text == ""
-              ? null
-              : () {
-                  setState(() {
-                    _isLoading = true;
-                  });
-                  signIn(usuario.text, password.text);
-                },
-          elevation: 0.0,
-          color: Colors.green,
-          child: Text(
-            'Ingresar',
-            style: TextStyle(color: Colors.white),
-          ),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
-        )
-        */
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
             primary: Colors.green, onPrimary: Colors.white),
@@ -133,21 +119,14 @@ class _LoginPageState extends State<LoginPage> {
           setState(() {
             _isLoading = true;
           });
-          if (signIn(usuario.text, password.text) == true) {
-            Fluttertoast.showToast(
-                msg: "Bienvenido " + usuario.text,
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-                backgroundColor: Colors.green,
-                fontSize: 16);
-          } else {
-            Fluttertoast.showToast(
-                msg: "Usuario / contraseña incorrectos!",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-                backgroundColor: Colors.green,
-                fontSize: 16);
-          }
+          signIn(usuario.text, password.text);
+
+          // Fluttertoast.showToast(
+          //     msg: "Usuario / contraseña incorrectos!",
+          //     toastLength: Toast.LENGTH_SHORT,
+          //     gravity: ToastGravity.BOTTOM,
+          //     backgroundColor: Colors.green,
+          //     fontSize: 16);
         },
       ),
     );
@@ -156,15 +135,16 @@ class _LoginPageState extends State<LoginPage> {
   Widget createExitButton(context, String nombre) {
     //String _nombre = nombre;
     return Container(
-        padding: const EdgeInsets.only(top: 10, left: 70, right: 70),
-        child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                primary: Colors.red, onPrimary: Colors.white),
-            child: Text(nombre),
-            onPressed: () => exit(0)
-            //tooltip:'Salir',
-            //child: new Icon(Icons.close)
-            ));
+      padding: const EdgeInsets.only(top: 10, left: 70, right: 70),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+            primary: Colors.red, onPrimary: Colors.white),
+        child: Text(nombre),
+        onPressed: () => exit(0),
+        //tooltip:'Salir',
+        //child: new Icon(Icons.close)
+      ),
+    );
   }
 
   Widget createAccountLink(context) {
@@ -202,7 +182,7 @@ class _LoginPageState extends State<LoginPage> {
             createUserInput(),
             createPasswordInput(),
             Padding(padding: EdgeInsets.only(top: 50)),
-            createLoginButton(), //context, "Ingresar", '/main'),
+            createLoginButton(),
             createExitButton(context, "Salir"),
             createAccountLink(context),
           ]),
